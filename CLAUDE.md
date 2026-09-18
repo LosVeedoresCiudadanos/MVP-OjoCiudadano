@@ -110,11 +110,13 @@ model HistorialEstado {
 - `npx prisma migrate dev --name <nombre>` — aplicar cambios al esquema
 - `npx prisma studio` — ver/editar los datos con una interfaz visual
 - `npm run seed` — crea/actualiza el usuario admin de desarrollo (`admin@ojociudadano.test` / `admin1234`)
+- `npm test` — corre las pruebas de integración/unitarias (Vitest)
+- `npm run db:test:reset` — resetea la base de datos de pruebas (`prisma/test.db`)
 
 ## Estado actual de la configuración
 - [x] Node cambiado a versión LTS (22 o 24) vía nvm
 - [x] Next.js inicializado (`create-next-app`, TypeScript + Tailwind + App Router)
 - [x] Prisma instalado e inicializado con SQLite
 - [x] Migración inicial aplicada (`prisma migrate dev --name init`)
-- [ ] Auth.js configurado (Credentials + JWT, sin adapter)
-- [ ] Pantallas de registro e inicio de sesión construidas
+- [x] Auth.js configurado (Credentials + JWT, sin adapter)
+- [x] Pantallas de registro e inicio de sesión construidas
