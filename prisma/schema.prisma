@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  email     String     @unique
+  password  String
+  rol       String     @default("ciudadano") // "ciudadano" | "admin"
+  denuncias Denuncia[]
+  createdAt DateTime   @default(now())
+}
+
+model Denuncia {
+  id                Int               @id @default(autoincrement())
+  codigoSeguimiento String            @unique @default(cuid())
+  categoria         String
+  descripcion       String
+  ubicacion         String?
+  evidencia         Json?
+  estado            String            @default("Recibido")
+  usuarioId         Int
+  usuario           Usuario           @relation(fields: [usuarioId], references: [id])
+  historial         HistorialEstado[]
+  createdAt         DateTime          @default(now())
+}
+
+model HistorialEstado {
+  id         Int      @id @default(autoincrement())
+  estado     String
+  comentario String?
+  fecha      DateTime @default(now())
+  denunciaId Int
+  denuncia   Denuncia @relation(fields: [denunciaId], references: [id])
+}

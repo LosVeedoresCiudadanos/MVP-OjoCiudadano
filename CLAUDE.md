@@ -10,8 +10,18 @@ Es el Proyecto Inicial (Design Thinking + Scrum) del curso Introducción a la In
 ## Stack técnico
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS
 - **Backend:** rutas de API de Next.js
-- **Base de datos:** SQLite vía Prisma ORM
+- **Base de datos:** SQLite vía Prisma ORM — versión **fijada a Prisma 6.x** (`prisma@6.19.3` / `@prisma/client@6.19.3`). Prisma 7 cambia de arquitectura (ya no acepta `url` en el bloque `datasource`, requiere `prisma.config.ts` + driver adapter) y no es compatible con el `schema.prisma` de este proyecto sin una migración manual.
 - **Node.js:** usar una versión LTS (22 o 24) vía nvm — no usar Node 25, es una versión "Current" ya sin soporte
+
+## Variables de entorno
+- `.env` — BD de desarrollo (`prisma/dev.db`)
+- `.env.test` — BD separada para pruebas de integración/e2e (`prisma/test.db`), se resetea antes de cada corrida
+- `.env.example` — plantilla committeada, sin secretos reales
+
+Nota: las rutas `file:...` de `DATABASE_URL` son relativas a la carpeta `prisma/`, no a la raíz del proyecto (comportamiento de Prisma).
+
+## Flujo de trabajo con git
+Todo cambio se hace en una rama nueva (nunca directo sobre `main`). Solo se hace merge a `main` cuando el trabajo de esa rama está probado y confirmado.
 
 ## División de trabajo
 - Backend (esquema, rutas de API): Nicolas
@@ -99,11 +109,12 @@ model HistorialEstado {
 - `npm run dev` — levantar el servidor de desarrollo
 - `npx prisma migrate dev --name <nombre>` — aplicar cambios al esquema
 - `npx prisma studio` — ver/editar los datos con una interfaz visual
+- `npm run seed` — crea/actualiza el usuario admin de desarrollo (`admin@ojociudadano.test` / `admin1234`)
 
 ## Estado actual de la configuración
 - [x] Node cambiado a versión LTS (22 o 24) vía nvm
 - [x] Next.js inicializado (`create-next-app`, TypeScript + Tailwind + App Router)
-- [ ] Prisma instalado e inicializado con SQLite
-- [ ] Migración inicial aplicada (`prisma migrate dev --name init`)
+- [x] Prisma instalado e inicializado con SQLite
+- [x] Migración inicial aplicada (`prisma migrate dev --name init`)
 - [ ] Auth.js configurado (Credentials + JWT, sin adapter)
 - [ ] Pantallas de registro e inicio de sesión construidas
