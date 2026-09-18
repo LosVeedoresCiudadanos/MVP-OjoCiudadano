@@ -120,3 +120,10 @@ model HistorialEstado {
 - [x] Migración inicial aplicada (`prisma migrate dev --name init`)
 - [x] Auth.js configurado (Credentials + JWT, sin adapter)
 - [x] Pantallas de registro e inicio de sesión construidas
+- [x] API de denuncias implementada (crear, consultar por código, listar admin, cambiar estado, subir evidencia)
+
+## Notas de implementación de la API de denuncias
+- Next.js App Router no permite nombres de segmento dinámico distintos en la misma posición de ruta. Por eso `GET /api/denuncias/:codigo` vive en la carpeta `src/app/api/denuncias/[id]/route.ts` (mismo nombre de carpeta que `[id]/estado`), aunque el valor que recibe es el `codigoSeguimiento`, no el id numérico.
+- Transiciones de estado válidas: `Recibido → En revisión → Respondido` (una a la vez, no se puede saltar ni retroceder). `PATCH /api/denuncias/:id/estado` responde 400 si la transición no es válida.
+- `GET /api/denuncias/:codigo` es público (sin sesión) — funciona como un número de seguimiento tipo paquetería.
+- `POST /api/denuncias` y `POST /api/upload` requieren sesión (cualquier rol). `GET /api/denuncias` y `PATCH .../estado` requieren rol admin.
