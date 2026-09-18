@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getDenunciaPorCodigo } from "@/lib/denuncias";
 
 // El segmento se llama [id] por restricción de Next.js (no puede coexistir con
 // [id]/estado si tuviera otro nombre), pero el valor que recibe es el
@@ -7,11 +7,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: codigo } = await params;
 
-  const denuncia = await prisma.denuncia.findUnique({
-    where: { codigoSeguimiento: codigo },
-    include: { historial: { orderBy: { fecha: "asc" } } },
-  });
-
+  const denuncia = await getDenunciaPorCodigo(codigo);
   if (!denuncia) {
     return NextResponse.json({ error: "Denuncia no encontrada" }, { status: 404 });
   }

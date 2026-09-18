@@ -121,6 +121,7 @@ model HistorialEstado {
 - [x] Auth.js configurado (Credentials + JWT, sin adapter)
 - [x] Pantallas de registro e inicio de sesión construidas
 - [x] API de denuncias implementada (crear, consultar por código, listar admin, cambiar estado, subir evidencia)
+- [x] Pantallas de ciudadano (nueva denuncia, seguimiento por código) y panel admin construidas
 
 ## Notas de implementación de la API de denuncias
 - Next.js App Router no permite nombres de segmento dinámico distintos en la misma posición de ruta. Por eso `GET /api/denuncias/:codigo` vive en la carpeta `src/app/api/denuncias/[id]/route.ts` (mismo nombre de carpeta que `[id]/estado`), aunque el valor que recibe es el `codigoSeguimiento`, no el id numérico.

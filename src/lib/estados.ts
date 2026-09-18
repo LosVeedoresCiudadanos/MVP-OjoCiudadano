@@ -14,3 +14,7 @@ export function esTransicionValida(actual: string, siguiente: string): siguiente
   const permitidos = TRANSICIONES_VALIDAS[actual as EstadoDenuncia];
   return permitidos?.includes(siguiente as EstadoDenuncia) ?? false;
 }
+
+export function siguientesEstadosPosibles(actual: string): EstadoDenuncia[] {
+  return TRANSICIONES_VALIDAS[actual as EstadoDenuncia] ?? [];
+}

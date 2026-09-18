@@ -15,6 +15,9 @@ export function Header() {
         <nav className="flex items-center gap-4 text-sm">
           {status === "authenticated" ? (
             <>
+              <Link href="/denuncias/nueva" className="underline">
+                Nueva denuncia
+              </Link>
               <span data-testid="usuario-sesion">{session.user?.name}</span>
               {session.user?.rol === "admin" && (
                 <Link href="/admin" className="underline">
