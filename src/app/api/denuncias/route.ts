@@ -89,5 +89,6 @@ export async function GET(request: Request) {
       estado: d.estado,
       fecha_creacion: d.createdAt,
     })),
+    { headers: { "Cache-Control": "no-store" } },
   );
 }

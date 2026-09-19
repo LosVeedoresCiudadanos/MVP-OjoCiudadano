@@ -31,7 +31,7 @@ export function AdminDenunciasPanel() {
     if (filtroEstado) params.set("estado", filtroEstado);
     if (filtroCategoria) params.set("categoria", filtroCategoria);
 
-    const respuesta = await fetch(`/api/denuncias?${params.toString()}`);
+    const respuesta = await fetch(`/api/denuncias?${params.toString()}`, { cache: "no-store" });
     if (!respuesta.ok) {
       setError("No se pudieron cargar las denuncias");
       setCargando(false);
