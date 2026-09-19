@@ -116,7 +116,9 @@ model HistorialEstado {
 - `npx prisma studio` — ver/editar los datos con una interfaz visual
 - `npm run seed` — crea/actualiza el usuario admin de desarrollo (`admin@ojociudadano.test` / `admin1234`)
 - `npm test` — corre las pruebas de integración/unitarias (Vitest)
+- `npm run test:e2e` — corre las pruebas end-to-end (Playwright); resetea y siembra `prisma/test.db` automáticamente antes
 - `npm run db:test:reset` — resetea la base de datos de pruebas (`prisma/test.db`)
+- `npm run db:test:seed` — siembra el admin en la base de datos de pruebas
 
 ## Estado actual de la configuración
 - [x] Node cambiado a versión LTS (22 o 24) vía nvm
@@ -127,6 +129,8 @@ model HistorialEstado {
 - [x] Pantallas de registro e inicio de sesión construidas
 - [x] API de denuncias implementada (crear, consultar por código, listar admin, cambiar estado, subir evidencia)
 - [x] Pantallas de ciudadano (nueva denuncia, seguimiento por código) y panel admin construidas
+- [x] Infraestructura de pruebas automatizadas (Vitest + Playwright, BD de test separada y reseteada automáticamente)
+- [ ] Suites e2e de los flujos críticos completos (Playwright) — por ahora solo hay una prueba de humo en `e2e/smoke.spec.ts`
 
 ## Notas de implementación de la API de denuncias
 - Next.js App Router no permite nombres de segmento dinámico distintos en la misma posición de ruta. Por eso `GET /api/denuncias/:codigo` vive en la carpeta `src/app/api/denuncias/[id]/route.ts` (mismo nombre de carpeta que `[id]/estado`), aunque el valor que recibe es el `codigoSeguimiento`, no el id numérico.

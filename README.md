@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Buzón de Reportes Ciudadanos
 
-## Getting Started
+Plataforma de reportes ciudadanos con seguimiento visible de estado. Ver [`CLAUDE.md`](./CLAUDE.md) para el contexto completo del proyecto, el contrato de API y el esquema de base de datos.
 
-First, run the development server:
+## Requisitos
+
+- Node.js LTS (22 o 24) vía [nvm](https://github.com/nvm-sh/nvm) — el repo trae `.nvmrc`, así que basta con correr `nvm use`.
+
+## Primeros pasos
 
 ```bash
+nvm use
+npm install
+cp .env.example .env   # y ajusta AUTH_SECRET si quieres
+npx prisma migrate dev # aplica el esquema a prisma/dev.db
+npm run seed            # crea el usuario admin de desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Cuentas de desarrollo:**
+- Admin: `admin@ojociudadano.test` / `admin1234` (creada por `npm run seed`)
+- Cualquier otra cuenta se crea normal desde `/registro`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Pruebas automáticas
 
-## Learn More
+El proyecto usa una base de datos de pruebas separada (`prisma/test.db`, vía `.env.test`) para no tocar nunca `prisma/dev.db`.
 
-To learn more about Next.js, take a look at the following resources:
+### Pruebas de integración (Vitest)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Corren las rutas de API directamente (sin levantar un servidor ni un navegador), usando `prisma/test.db`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm test
+```
 
-## Deploy on Vercel
+### Pruebas end-to-end (Playwright)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Simulan un usuario real en un navegador, contra un servidor Next.js levantado en el puerto **3100** (distinto al 3000 de `npm run dev`, para no chocar si tienes el servidor de desarrollo corriendo al mismo tiempo).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run test:e2e
+```
+
+Este comando automáticamente, antes de correr las pruebas:
+1. Resetea `prisma/test.db` (`npm run db:test:reset`)
+2. Siembra el usuario admin en esa base (`npm run db:test:seed`)
+3. Levanta el servidor y corre las pruebas de `e2e/`
+
+Si quieres correr esos pasos por separado:
+
+```bash
+npm run db:test:reset   # borra y recrea prisma/test.db desde las migraciones
+npm run db:test:seed    # crea el admin en prisma/test.db
+npx playwright test     # corre las pruebas (requiere el servidor de prueba corriendo, ver playwright.config.ts)
+```
+
+### Otros comandos útiles
+
+- `npm run lint` — ESLint
+- `npm run build` — build de producción (incluye chequeo de TypeScript)
+- `npx prisma studio` — interfaz visual para ver/editar `prisma/dev.db`
+
+## Correo (simulado)
+
+Las notificaciones de cambio de estado no se envían por correo real todavía — se loguean en consola y quedan en `mail-outbox/outbox.log` (no se versiona). Ver [`src/lib/mailer.ts`](./src/lib/mailer.ts).
