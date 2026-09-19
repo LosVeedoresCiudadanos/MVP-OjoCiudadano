@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { readdir, rm } from "node:fs/promises";
+import { readdir, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { POST } from "@/app/api/upload/route";
 import { resetDb, crearUsuario } from "../helpers/db";
@@ -46,6 +46,34 @@ describe("POST /api/upload", () => {
     expect(response.status).toBe(201);
     const data = await response.json();
     expect(data.url).toMatch(/^\/uploads\/.+\.png$/);
+  });
+
+  it("convierte una foto HEIC (formato por defecto de iPhone) a JPEG", async () => {
+    const usuario = await crearUsuario();
+    mockSesion({ id: usuario.id, rol: "ciudadano" });
+
+    const heic = await readFile(path.join(__dirname, "..", "..", "e2e", "fixtures", "evidencia.heic"));
+    const formData = new FormData();
+    formData.set("archivo", new File([heic], "IMG_0001.heic", { type: "image/heic" }));
+
+    const response = await POST(new Request("http://localhost/api/upload", { method: "POST", body: formData }));
+    expect(response.status).toBe(201);
+    const data = await response.json();
+    expect(data.url).toMatch(/\.jpg$/);
+  });
+
+  it("detecta HEIC por extensión aunque el navegador no mande el tipo (común en móviles)", async () => {
+    const usuario = await crearUsuario();
+    mockSesion({ id: usuario.id, rol: "ciudadano" });
+
+    const heic = await readFile(path.join(__dirname, "..", "..", "e2e", "fixtures", "evidencia.heic"));
+    const formData = new FormData();
+    formData.set("archivo", new File([heic], "IMG_0002.heic", { type: "" }));
+
+    const response = await POST(new Request("http://localhost/api/upload", { method: "POST", body: formData }));
+    expect(response.status).toBe(201);
+    const data = await response.json();
+    expect(data.url).toMatch(/\.jpg$/);
   });
 
   it("rechaza un tipo de archivo no permitido", async () => {
