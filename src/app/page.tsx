@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BuscarDenunciaForm } from "@/components/BuscarDenunciaForm";
 import { EstadoBadge } from "@/components/EstadoBadge";
+import { CARD_CLASS } from "@/lib/ui";
 
 const PASOS = [
   {
@@ -22,9 +23,6 @@ const PASOS = [
     descripcion: "Consulta el estado y las actualizaciones.",
   },
 ];
-
-const CARD =
-  "rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:shadow-none";
 
 function formatearFecha(fecha: Date) {
   return new Intl.DateTimeFormat("es-CO", { dateStyle: "medium" }).format(fecha);
@@ -75,7 +73,7 @@ export default async function Home() {
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {PASOS.map((paso) => (
-            <div key={paso.numero} className={`${CARD} p-5`}>
+            <div key={paso.numero} className={`${CARD_CLASS} p-5`}>
               <span className="text-xs font-semibold text-primary">{paso.numero}</span>
               <h3 className="mt-1 text-sm font-semibold">{paso.titulo}</h3>
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{paso.descripcion}</p>
@@ -99,7 +97,7 @@ export default async function Home() {
           </div>
 
           {denuncias.length === 0 ? (
-            <div className={`${CARD} p-6 text-sm text-slate-600 dark:text-slate-300`}>
+            <div className={`${CARD_CLASS} p-6 text-sm text-slate-600 dark:text-slate-300`}>
               <p className="mb-3">Todavía no has creado ninguna denuncia.</p>
               <Link href="/denuncias/nueva" className="text-primary hover:underline">
                 Crear tu primera denuncia
@@ -108,15 +106,15 @@ export default async function Home() {
           ) : (
             <div className="flex flex-col gap-5">
               <div className="grid grid-cols-3 gap-3">
-                <div className={`${CARD} p-4 text-center`}>
+                <div className={`${CARD_CLASS} p-4 text-center`}>
                   <span className="block text-xl font-semibold">{recibidas}</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">Recibidas</span>
                 </div>
-                <div className={`${CARD} p-4 text-center`}>
+                <div className={`${CARD_CLASS} p-4 text-center`}>
                   <span className="block text-xl font-semibold">{enRevision}</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">En revisión</span>
                 </div>
-                <div className={`${CARD} p-4 text-center`}>
+                <div className={`${CARD_CLASS} p-4 text-center`}>
                   <span className="block text-xl font-semibold">{respondidas}</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">Respondidas</span>
                 </div>
@@ -127,7 +125,7 @@ export default async function Home() {
                   <li key={denuncia.id}>
                     <Link
                       href={`/denuncias/${denuncia.codigoSeguimiento}`}
-                      className={`${CARD} flex items-center justify-between p-4 text-sm hover:border-primary`}
+                      className={`${CARD_CLASS} flex items-center justify-between p-4 text-sm hover:border-primary`}
                     >
                       <span>
                         <span className="block font-medium">{denuncia.categoria}</span>
@@ -147,7 +145,7 @@ export default async function Home() {
 
       {/* Consulta por código */}
       <section className="mt-12 border-t border-slate-200 pt-10 dark:border-slate-800">
-        <div className={`${CARD} p-6`}>
+        <div className={`${CARD_CLASS} p-6`}>
           <p className="mb-3 text-sm font-medium">¿Ya tienes un código de seguimiento?</p>
           <BuscarDenunciaForm />
         </div>

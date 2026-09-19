@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CATEGORIAS_DENUNCIA } from "@/lib/categorias";
 import { ESTADOS_DENUNCIA, siguientesEstadosPosibles } from "@/lib/estados";
 import { EstadoBadge } from "@/components/EstadoBadge";
+import { CARD_CLASS } from "@/lib/ui";
 
 type DenunciaResumen = {
   id: number;
@@ -44,8 +45,8 @@ export function AdminDenunciasPanel() {
   }, [filtroEstado, filtroCategoria]);
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap gap-3 text-sm">
+    <div className="flex flex-col gap-6">
+      <div className={`${CARD_CLASS} flex flex-wrap gap-4 p-4 text-sm`}>
         <label className="flex flex-col gap-1">
           Estado
           <select
@@ -78,15 +79,17 @@ export function AdminDenunciasPanel() {
         </label>
       </div>
 
-      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
       {cargando ? (
         <p className="text-sm text-slate-500 dark:text-slate-400">Cargando...</p>
       ) : denuncias.length === 0 ? (
-        <p className="text-sm text-slate-500 dark:text-slate-400">No hay denuncias.</p>
+        <div className={`${CARD_CLASS} p-6 text-sm text-slate-600 dark:text-slate-300`}>
+          No hay denuncias que coincidan con los filtros.
+        </div>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-3">
           {denuncias.map((denuncia) => (
-            <li key={denuncia.id} className="rounded border border-slate-200 p-3 dark:border-slate-800">
+            <li key={denuncia.id} className={`${CARD_CLASS} p-4`}>
               <button
                 type="button"
                 onClick={() => setFilaAbierta(filaAbierta === denuncia.id ? null : denuncia.id)}
@@ -150,7 +153,7 @@ function CambiarEstadoForm({
   }
 
   return (
-    <div className="mt-3 border-t border-slate-200 pt-3 dark:border-slate-800">
+    <div className="mt-3 border-t border-slate-200 pt-3 dark:border-slate-700">
       {opciones.length === 0 ? (
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Esta denuncia ya está en su estado final.
