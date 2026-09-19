@@ -8,6 +8,13 @@ export async function POST(request: Request) {
   const { session, error } = await requireSession();
   if (error) return error;
 
+  if (session.user.rol === "admin") {
+    return NextResponse.json(
+      { error: "Los administradores no pueden crear denuncias" },
+      { status: 403 },
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();

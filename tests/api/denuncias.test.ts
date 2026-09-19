@@ -47,6 +47,16 @@ describe("POST /api/denuncias", () => {
     expect(data.codigoSeguimiento).toBeTypeOf("string");
   });
 
+  it("rechaza si el usuario autenticado es admin", async () => {
+    const admin = await crearUsuario({ rol: "admin" });
+    mockSesion({ id: admin.id, rol: "admin" });
+
+    const response = await POST(
+      req({ categoria: "Otro", descripcion: "Un admin no debería poder crear esto" }),
+    );
+    expect(response.status).toBe(403);
+  });
+
   it("rechaza una categoría inválida", async () => {
     const usuario = await crearUsuario();
     mockSesion({ id: usuario.id, rol: "ciudadano" });

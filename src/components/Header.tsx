@@ -7,37 +7,41 @@ export function Header() {
   const { data: session, status } = useSession();
 
   return (
-    <header className="border-b border-black/10 dark:border-white/15">
+    <header className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
       <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-        <Link href="/" className="font-semibold">
+        <Link href="/" className="font-semibold text-primary">
           Buzón de Reportes Ciudadanos
         </Link>
         <nav className="flex items-center gap-4 text-sm">
           {status === "authenticated" ? (
             <>
-              <Link href="/denuncias/nueva" className="underline">
-                Nueva denuncia
-              </Link>
-              <span data-testid="usuario-sesion">{session.user?.name}</span>
+              {session.user?.rol !== "admin" && (
+                <Link href="/denuncias/nueva" className="text-primary hover:underline">
+                  Nueva denuncia
+                </Link>
+              )}
+              <span data-testid="usuario-sesion" className="text-slate-600 dark:text-slate-300">
+                {session.user?.name}
+              </span>
               {session.user?.rol === "admin" && (
-                <Link href="/admin" className="underline">
+                <Link href="/admin" className="text-primary hover:underline">
                   Admin
                 </Link>
               )}
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="underline"
+                className="text-slate-600 hover:underline dark:text-slate-300"
               >
                 Cerrar sesión
               </button>
             </>
           ) : status === "loading" ? null : (
             <>
-              <Link href="/login" className="underline">
+              <Link href="/login" className="text-primary hover:underline">
                 Iniciar sesión
               </Link>
-              <Link href="/registro" className="underline">
+              <Link href="/registro" className="text-primary hover:underline">
                 Registrarse
               </Link>
             </>

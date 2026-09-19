@@ -51,7 +51,7 @@ export function AdminDenunciasPanel() {
           <select
             value={filtroEstado}
             onChange={(e) => setFiltroEstado(e.target.value)}
-            className="rounded border border-black/20 px-2 py-1 dark:border-white/20"
+            className="rounded border border-slate-300 px-2 py-1 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-900"
           >
             <option value="">Todos</option>
             {ESTADOS_DENUNCIA.map((estado) => (
@@ -66,7 +66,7 @@ export function AdminDenunciasPanel() {
           <select
             value={filtroCategoria}
             onChange={(e) => setFiltroCategoria(e.target.value)}
-            className="rounded border border-black/20 px-2 py-1 dark:border-white/20"
+            className="rounded border border-slate-300 px-2 py-1 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-900"
           >
             <option value="">Todas</option>
             {CATEGORIAS_DENUNCIA.map((categoria) => (
@@ -80,13 +80,13 @@ export function AdminDenunciasPanel() {
 
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
       {cargando ? (
-        <p className="text-sm text-black/60 dark:text-white/60">Cargando...</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Cargando...</p>
       ) : denuncias.length === 0 ? (
-        <p className="text-sm text-black/60 dark:text-white/60">No hay denuncias.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">No hay denuncias.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {denuncias.map((denuncia) => (
-            <li key={denuncia.id} className="rounded border border-black/10 p-3 dark:border-white/15">
+            <li key={denuncia.id} className="rounded border border-slate-200 p-3 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setFilaAbierta(filaAbierta === denuncia.id ? null : denuncia.id)}
@@ -150,9 +150,9 @@ function CambiarEstadoForm({
   }
 
   return (
-    <div className="mt-3 border-t border-black/10 pt-3 dark:border-white/15">
+    <div className="mt-3 border-t border-slate-200 pt-3 dark:border-slate-800">
       {opciones.length === 0 ? (
-        <p className="text-xs text-black/60 dark:text-white/60">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Esta denuncia ya está en su estado final.
         </p>
       ) : (
@@ -162,7 +162,7 @@ function CambiarEstadoForm({
             <select
               value={nuevoEstado}
               onChange={(e) => setNuevoEstado(e.target.value)}
-              className="rounded border border-black/20 px-2 py-1 dark:border-white/20"
+              className="rounded border border-slate-300 px-2 py-1 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-900"
             >
               {opciones.map((estado) => (
                 <option key={estado} value={estado}>
@@ -177,14 +177,14 @@ function CambiarEstadoForm({
               value={comentario}
               onChange={(e) => setComentario(e.target.value)}
               rows={2}
-              className="rounded border border-black/20 px-2 py-1 dark:border-white/20"
+              className="rounded border border-slate-300 px-2 py-1 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-900"
             />
           </label>
           {error && <p className="text-red-600">{error}</p>}
           <button
             type="submit"
             disabled={enviando}
-            className="self-start rounded bg-black px-3 py-1.5 text-white disabled:opacity-50 dark:bg-white dark:text-black"
+            className="self-start rounded bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
           >
             {enviando ? "Guardando..." : "Actualizar estado"}
           </button>

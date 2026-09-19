@@ -41,6 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# auto-generado por `next dev`/`next build` (ver next.config.ts agentRules)
+/AGENTS.md
+
 # prisma / sqlite
 /prisma/*.db
 /prisma/*.db-journal
