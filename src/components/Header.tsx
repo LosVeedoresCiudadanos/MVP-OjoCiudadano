@@ -16,9 +16,14 @@ export function Header() {
           {status === "authenticated" ? (
             <>
               {session.user?.rol !== "admin" && (
-                <Link href="/denuncias/nueva" className="text-primary hover:underline">
-                  Nueva denuncia
-                </Link>
+                <>
+                  <Link href="/mis-denuncias" className="text-primary hover:underline">
+                    Mis denuncias
+                  </Link>
+                  <Link href="/denuncias/nueva" className="text-primary hover:underline">
+                    Nueva denuncia
+                  </Link>
+                </>
               )}
               <span data-testid="usuario-sesion" className="text-slate-600 dark:text-slate-300">
                 {session.user?.name}

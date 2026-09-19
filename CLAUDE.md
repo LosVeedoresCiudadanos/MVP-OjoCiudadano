@@ -46,6 +46,11 @@ POST   /api/denuncias
 GET    /api/denuncias/:codigo
   resp:  { id, categoria, descripcion, estado, historial: [{estado, fecha}] }
 
+GET    /api/denuncias/mias       (ciudadano autenticado, no admin)
+  resp:  [ { id, codigoSeguimiento, categoria, estado, fecha_creacion }, ... ]
+  Nota: no estaba en el contrato original; se agregó porque el ciudadano no
+  tenía forma de ver sus propias denuncias sin guardar el código a mano.
+
 GET    /api/denuncias            (admin, filtros ?estado=&categoria=)
   resp:  [ { id, categoria, estado, fecha_creacion }, ... ]
 
