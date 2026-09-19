@@ -12,12 +12,13 @@
     "db:test:reset": "dotenv -e .env.test -- npx prisma migrate reset --force --skip-seed",
     "db:test:seed": "dotenv -e .env.test -- npm run seed",
     "pretest:e2e": "npm run db:test:reset && npm run db:test:seed",
-    "test:e2e": "playwright test"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "test:e2e": "playwright test",
+    "db:prod:migrate": "prisma migrate deploy",
+    "db:prod:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@prisma/adapter-libsql": "^6.19.3",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "next": "16.3.5",

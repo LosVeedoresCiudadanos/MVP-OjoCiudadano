@@ -62,6 +62,36 @@ npx playwright test     # corre las pruebas (requiere el servidor de prueba corr
 - `npm run build` — build de producción (incluye chequeo de TypeScript)
 - `npx prisma studio` — interfaz visual para ver/editar `prisma/dev.db`
 
+## Despliegue (Vercel + Turso)
+
+SQLite como archivo local no funciona en Vercel (las funciones son "serverless", sin disco persistente), así que producción usa [Turso](https://turso.tech) — una base de datos hospedada, compatible con SQLite. El código detecta automáticamente si debe usar Turso: basta con que existan las variables `TURSO_DATABASE_URL` y `TURSO_AUTH_TOKEN` (ver `src/lib/prisma.ts` y `prisma.config.ts`). Sin esas variables, todo sigue funcionando exactamente igual contra el archivo local (`prisma/dev.db`).
+
+### Configurar la base de datos de producción (una sola vez)
+
+Con las variables de tu base de Turso en el entorno:
+
+```bash
+export TURSO_DATABASE_URL="libsql://tu-base.turso.io"
+export TURSO_AUTH_TOKEN="tu-token"
+export AUTH_SECRET="$(openssl rand -base64 32)"  # o el que ya estés usando en Vercel
+
+npm run db:prod:migrate   # aplica las migraciones a Turso
+npm run db:prod:seed      # crea el usuario admin
+```
+
+Cada vez que cambies `prisma/schema.prisma` y crees una migración nueva (`npx prisma migrate dev`), hay que volver a correr `npm run db:prod:migrate` con esas mismas variables para aplicarla también en Turso.
+
+### Vercel
+
+1. Conecta el repo de GitHub en [vercel.com](https://vercel.com) ("Import Project").
+2. En la configuración del proyecto → Environment Variables, agrega:
+   - `TURSO_DATABASE_URL`
+   - `TURSO_AUTH_TOKEN`
+   - `AUTH_SECRET` (un valor random, `openssl rand -base64 32`)
+3. Deploy. Cada push a `main` despliega automáticamente.
+
+Si al probar el login en producción aparece un error de "UntrustedHost" de Auth.js, agrega también la variable `AUTH_TRUST_HOST=true` en Vercel (en teoría Auth.js detecta Vercel automáticamente, pero por si acaso).
+
 ## Correo (simulado)
 
 Las notificaciones de cambio de estado no se envían por correo real todavía — se loguean en consola y quedan en `mail-outbox/outbox.log` (no se versiona). Ver [`src/lib/mailer.ts`](./src/lib/mailer.ts).

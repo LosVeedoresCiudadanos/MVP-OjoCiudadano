@@ -10,13 +10,14 @@ Es el Proyecto Inicial (Design Thinking + Scrum) del curso Introducción a la In
 ## Stack técnico
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS
 - **Backend:** rutas de API de Next.js
-- **Base de datos:** SQLite vía Prisma ORM — versión **fijada a Prisma 6.x** (`prisma@6.19.3` / `@prisma/client@6.19.3`). Prisma 7 cambia de arquitectura (ya no acepta `url` en el bloque `datasource`, requiere `prisma.config.ts` + driver adapter) y no es compatible con el `schema.prisma` de este proyecto sin una migración manual.
+- **Base de datos:** SQLite vía Prisma ORM — versión **fijada a Prisma 6.x** (`prisma@6.19.3` / `@prisma/client@6.19.3`). Prisma 7 cambia de arquitectura (ya no acepta `url` en el bloque `datasource` sin adapter) y no es compatible con el `schema.prisma` de este proyecto sin una migración manual. En dev/test se usa el archivo SQLite normal; en producción (Vercel) se usa Turso vía un driver adapter — ver `prisma.config.ts` y `src/lib/prisma.ts`, y la sección "Despliegue" del README.
 - **Node.js:** usar una versión LTS (22 o 24) vía nvm — no usar Node 25, es una versión "Current" ya sin soporte
 
 ## Variables de entorno
 - `.env` — BD de desarrollo (`prisma/dev.db`)
 - `.env.test` — BD separada para pruebas de integración/e2e (`prisma/test.db`), se resetea antes de cada corrida
 - `.env.example` — plantilla committeada, sin secretos reales
+- `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` — solo en producción (configuradas en Vercel), activan el driver adapter de Turso en vez del archivo SQLite local
 
 Nota: las rutas `file:...` de `DATABASE_URL` son relativas a la carpeta `prisma/`, no a la raíz del proyecto (comportamiento de Prisma).
 
@@ -119,6 +120,7 @@ model HistorialEstado {
 - `npm run test:e2e` — corre las pruebas end-to-end (Playwright); resetea y siembra `prisma/test.db` automáticamente antes
 - `npm run db:test:reset` — resetea la base de datos de pruebas (`prisma/test.db`)
 - `npm run db:test:seed` — siembra el admin en la base de datos de pruebas
+- `npm run db:prod:migrate` / `npm run db:prod:seed` — aplican migraciones/seed a Turso (requieren `TURSO_DATABASE_URL`/`TURSO_AUTH_TOKEN` en el entorno). Ver sección "Despliegue" en el README.
 
 ## Estado actual de la configuración
 - [x] Node cambiado a versión LTS (22 o 24) vía nvm
@@ -131,6 +133,7 @@ model HistorialEstado {
 - [x] Pantallas de ciudadano (nueva denuncia, seguimiento por código) y panel admin construidas
 - [x] Infraestructura de pruebas automatizadas (Vitest + Playwright, BD de test separada y reseteada automáticamente)
 - [x] Suites e2e de los flujos críticos completos (Playwright): flujo ciudadano, flujo admin, casos de error
+- [x] Base de datos de producción en Turso + soporte de despliegue en Vercel (ver README, sección "Despliegue")
 
 ## Notas de implementación de la API de denuncias
 - Next.js App Router no permite nombres de segmento dinámico distintos en la misma posición de ruta. Por eso `GET /api/denuncias/:codigo` vive en la carpeta `src/app/api/denuncias/[id]/route.ts` (mismo nombre de carpeta que `[id]/estado`), aunque el valor que recibe es el `codigoSeguimiento`, no el id numérico.
