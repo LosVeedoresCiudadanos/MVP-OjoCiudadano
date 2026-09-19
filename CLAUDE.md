@@ -130,7 +130,7 @@ model HistorialEstado {
 - [x] API de denuncias implementada (crear, consultar por código, listar admin, cambiar estado, subir evidencia)
 - [x] Pantallas de ciudadano (nueva denuncia, seguimiento por código) y panel admin construidas
 - [x] Infraestructura de pruebas automatizadas (Vitest + Playwright, BD de test separada y reseteada automáticamente)
-- [ ] Suites e2e de los flujos críticos completos (Playwright) — por ahora solo hay una prueba de humo en `e2e/smoke.spec.ts`
+- [x] Suites e2e de los flujos críticos completos (Playwright): flujo ciudadano, flujo admin, casos de error
 
 ## Notas de implementación de la API de denuncias
 - Next.js App Router no permite nombres de segmento dinámico distintos en la misma posición de ruta. Por eso `GET /api/denuncias/:codigo` vive en la carpeta `src/app/api/denuncias/[id]/route.ts` (mismo nombre de carpeta que `[id]/estado`), aunque el valor que recibe es el `codigoSeguimiento`, no el id numérico.
