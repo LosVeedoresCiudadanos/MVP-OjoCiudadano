@@ -112,4 +112,29 @@ describe("GET /api/denuncias", () => {
     expect(filtradas).toHaveLength(1);
     expect(filtradas[0].categoria).toBe("Otro");
   });
+
+  it("incluye descripción, ubicación y evidencia para que el admin pueda revisarlas", async () => {
+    const ciudadano = await crearUsuario();
+    mockSesion({ id: ciudadano.id, rol: "ciudadano" });
+    await POST(
+      req({
+        categoria: "Otro",
+        descripcion: "Bache profundo",
+        ubicacion: "Calle 5 # 10-20",
+        evidencia: ["/uploads/foto1.jpg", "https://blob.vercel-storage.com/foto2.jpg"],
+      }),
+    );
+
+    const admin = await crearUsuario({ rol: "admin" });
+    mockSesion({ id: admin.id, rol: "admin" });
+
+    const respuesta = await GET(reqGet());
+    const [denuncia] = await respuesta.json();
+    expect(denuncia.descripcion).toBe("Bache profundo");
+    expect(denuncia.ubicacion).toBe("Calle 5 # 10-20");
+    expect(denuncia.evidencia).toEqual([
+      "/uploads/foto1.jpg",
+      "https://blob.vercel-storage.com/foto2.jpg",
+    ]);
+  });
 });

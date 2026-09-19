@@ -83,6 +83,9 @@ export async function GET(request: Request) {
     denuncias.map((d) => ({
       id: d.id,
       categoria: d.categoria,
+      descripcion: d.descripcion,
+      ubicacion: d.ubicacion,
+      evidencia: (d.evidencia as string[] | null) ?? [],
       estado: d.estado,
       fecha_creacion: d.createdAt,
     })),

@@ -54,7 +54,11 @@ GET    /api/denuncias/mias       (ciudadano autenticado, no admin)
   tenía forma de ver sus propias denuncias sin guardar el código a mano.
 
 GET    /api/denuncias            (admin, filtros ?estado=&categoria=)
-  resp:  [ { id, categoria, estado, fecha_creacion }, ... ]
+  resp:  [ { id, categoria, descripcion, ubicacion, evidencia: [urls], estado, fecha_creacion }, ... ]
+  Nota: descripcion/ubicacion/evidencia se agregaron al contrato original
+  (que solo tenía id/categoria/estado/fecha_creacion) para que el admin
+  pueda revisar la denuncia completa —incluida la foto de evidencia—
+  antes de cambiar su estado.
 
 PATCH  /api/denuncias/:id/estado (admin)
   body:  { estado: "En revisión" | "Respondido", comentario? }

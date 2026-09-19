@@ -9,6 +9,9 @@ import { CARD_CLASS } from "@/lib/ui";
 type DenunciaResumen = {
   id: number;
   categoria: string;
+  descripcion: string;
+  ubicacion: string | null;
+  evidencia: string[];
   estado: string;
   fecha_creacion: string;
 };
@@ -101,17 +104,45 @@ export function AdminDenunciasPanel() {
                 <EstadoBadge estado={denuncia.estado} />
               </button>
               {filaAbierta === denuncia.id && (
-                <CambiarEstadoForm
-                  denuncia={denuncia}
-                  onActualizado={() => {
-                    setFilaAbierta(null);
-                    cargarDenuncias();
-                  }}
-                />
+                <>
+                  <DetalleDenuncia denuncia={denuncia} />
+                  <CambiarEstadoForm
+                    denuncia={denuncia}
+                    onActualizado={() => {
+                      setFilaAbierta(null);
+                      cargarDenuncias();
+                    }}
+                  />
+                </>
               )}
             </li>
           ))}
         </ul>
+      )}
+    </div>
+  );
+}
+
+function DetalleDenuncia({ denuncia }: { denuncia: DenunciaResumen }) {
+  return (
+    <div className="mt-3 border-t border-slate-200 pt-3 text-sm dark:border-slate-700">
+      <p className="whitespace-pre-wrap">{denuncia.descripcion}</p>
+      {denuncia.ubicacion && (
+        <p className="mt-2 text-slate-500 dark:text-slate-400">Ubicación: {denuncia.ubicacion}</p>
+      )}
+      {denuncia.evidencia.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {denuncia.evidencia.map((url) => (
+            <a key={url} href={url} target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={url}
+                alt="Evidencia de la denuncia"
+                className="h-24 w-24 rounded object-cover hover:opacity-80"
+              />
+            </a>
+          ))}
+        </div>
       )}
     </div>
   );
