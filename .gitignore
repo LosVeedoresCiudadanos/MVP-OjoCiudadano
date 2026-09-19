@@ -51,3 +51,6 @@ next-env.d.ts
 # evidencia subida por usuarios (contenido generado, no versionar)
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+# correos simulados de desarrollo (ver src/lib/mailer.ts)
+/mail-outbox/
