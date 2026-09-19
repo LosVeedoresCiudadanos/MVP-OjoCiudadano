@@ -18,6 +18,7 @@ Es el Proyecto Inicial (Design Thinking + Scrum) del curso Introducción a la In
 - `.env.test` — BD separada para pruebas de integración/e2e (`prisma/test.db`), se resetea antes de cada corrida
 - `.env.example` — plantilla committeada, sin secretos reales
 - `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` — solo en producción (configuradas en Vercel), activan el driver adapter de Turso en vez del archivo SQLite local
+- `BLOB_READ_WRITE_TOKEN` — solo en producción (configurada en Vercel al conectar Vercel Blob), activa la subida de evidencia a Vercel Blob en vez de `public/uploads/` local (Vercel tiene el sistema de archivos de solo lectura)
 
 Nota: las rutas `file:...` de `DATABASE_URL` son relativas a la carpeta `prisma/`, no a la raíz del proyecto (comportamiento de Prisma).
 
@@ -134,6 +135,7 @@ model HistorialEstado {
 - [x] Infraestructura de pruebas automatizadas (Vitest + Playwright, BD de test separada y reseteada automáticamente)
 - [x] Suites e2e de los flujos críticos completos (Playwright): flujo ciudadano, flujo admin, casos de error
 - [x] Base de datos de producción en Turso + soporte de despliegue en Vercel (ver README, sección "Despliegue")
+- [x] Desplegado en producción: https://ojo-ciudadano-pi.vercel.app (Vercel + Turso + Vercel Blob para evidencia)
 
 ## Notas de implementación de la API de denuncias
 - Next.js App Router no permite nombres de segmento dinámico distintos en la misma posición de ruta. Por eso `GET /api/denuncias/:codigo` vive en la carpeta `src/app/api/denuncias/[id]/route.ts` (mismo nombre de carpeta que `[id]/estado`), aunque el valor que recibe es el `codigoSeguimiento`, no el id numérico.

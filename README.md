@@ -62,11 +62,16 @@ npx playwright test     # corre las pruebas (requiere el servidor de prueba corr
 - `npm run build` — build de producción (incluye chequeo de TypeScript)
 - `npx prisma studio` — interfaz visual para ver/editar `prisma/dev.db`
 
-## Despliegue (Vercel + Turso)
+## Despliegue (Vercel + Turso + Vercel Blob)
 
-SQLite como archivo local no funciona en Vercel (las funciones son "serverless", sin disco persistente), así que producción usa [Turso](https://turso.tech) — una base de datos hospedada, compatible con SQLite. El código detecta automáticamente si debe usar Turso: basta con que existan las variables `TURSO_DATABASE_URL` y `TURSO_AUTH_TOKEN` (ver `src/lib/prisma.ts` y `prisma.config.ts`). Sin esas variables, todo sigue funcionando exactamente igual contra el archivo local (`prisma/dev.db`).
+**En producción: https://ojo-ciudadano-pi.vercel.app**
 
-### Configurar la base de datos de producción (una sola vez)
+SQLite como archivo local no funciona en Vercel (las funciones son "serverless", con sistema de archivos de solo lectura y sin disco persistente). Esto afecta dos cosas, y ambas se resuelven igual: el código detecta automáticamente si hay que usar el servicio en la nube, sin cambiar nada más.
+
+- **Base de datos** → [Turso](https://turso.tech) (SQLite hospedado). Se activa si existen `TURSO_DATABASE_URL` y `TURSO_AUTH_TOKEN` (ver `src/lib/prisma.ts` y `prisma.config.ts`). Sin esas variables, sigue usando el archivo local (`prisma/dev.db`).
+- **Evidencia (fotos subidas)** → [Vercel Blob](https://vercel.com/docs/vercel-blob). Se activa si existe `BLOB_READ_WRITE_TOKEN` (ver `src/app/api/upload/route.ts`). Sin esa variable, sigue guardando en `public/uploads/` local.
+
+### Configurar la base de datos de producción (cuando cambie el esquema)
 
 Con las variables de tu base de Turso en el entorno:
 
@@ -83,12 +88,20 @@ Cada vez que cambies `prisma/schema.prisma` y crees una migración nueva (`npx p
 
 ### Vercel
 
-1. Conecta el repo de GitHub en [vercel.com](https://vercel.com) ("Import Project").
-2. En la configuración del proyecto → Environment Variables, agrega:
-   - `TURSO_DATABASE_URL`
-   - `TURSO_AUTH_TOKEN`
-   - `AUTH_SECRET` (un valor random, `openssl rand -base64 32`)
-3. Deploy. Cada push a `main` despliega automáticamente.
+El proyecto ya está creado y conectado al repo (`vercel git connect`) — cada push a `main` despliega solo. Si necesitas volver a montarlo desde cero (otra cuenta, otro repo):
+
+1. **El repo debe ser público** en GitHub, o necesitas plan Pro de Vercel (el plan gratis "Hobby" no despliega repos privados de una organización).
+2. Usa el [CLI de Vercel](https://vercel.com/docs/cli) en vez de la interfaz web — es más confiable para este flujo:
+   ```bash
+   npx vercel login
+   npx vercel link --yes --project <nombre-en-minusculas>
+   printf '%s' "$TURSO_DATABASE_URL" | npx vercel env add TURSO_DATABASE_URL production
+   printf '%s' "$TURSO_AUTH_TOKEN" | npx vercel env add TURSO_AUTH_TOKEN production
+   printf '%s' "$AUTH_SECRET" | npx vercel env add AUTH_SECRET production
+   npx vercel blob create-store <nombre> --access public --yes   # conecta Vercel Blob (agrega BLOB_READ_WRITE_TOKEN solo)
+   npx vercel --prod --yes
+   ```
+3. Verifica que **"Framework Preset"** haya quedado en **Next.js**, no "Other" (`npx vercel project inspect <proyecto>`) — si el proyecto se crea sin detectar el framework (por ejemplo con `vercel project add`), todas las rutas responden 404 aunque el build sea exitoso.
 
 Si al probar el login en producción aparece un error de "UntrustedHost" de Auth.js, agrega también la variable `AUTH_TRUST_HOST=true` en Vercel (en teoría Auth.js detecta Vercel automáticamente, pero por si acaso).
 
