@@ -21,6 +21,15 @@ export async function enviarCorreo({ to, subject, body }: CorreoParams) {
 
   console.log(`[correo simulado] "${subject}" -> ${to}`);
 
-  await mkdir(OUTBOX_DIR, { recursive: true });
-  await appendFile(OUTBOX_FILE, entrada, "utf-8");
+  // En Vercel el sistema de archivos es de solo lectura (igual que con
+  // SQLite y las fotos), así que ahí no se puede escribir el outbox local.
+  // No es crítico — el console.log de arriba ya deja el registro visible
+  // en `vercel logs` — así que si falla la escritura simplemente se
+  // ignora en vez de tumbar la petición que llamó a esta función.
+  try {
+    await mkdir(OUTBOX_DIR, { recursive: true });
+    await appendFile(OUTBOX_FILE, entrada, "utf-8");
+  } catch {
+    // ignorado a propósito, ver comentario arriba
+  }
 }
